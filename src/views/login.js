@@ -10,7 +10,8 @@ class Login extends React.Component{
 
     state = {
         username: '',
-        password: ''
+        password: '',
+        mensagemErro: null
     }
     entrar = () =>{
         axios.post('http://localhost:3002/user/authenticate', {
@@ -19,9 +20,11 @@ class Login extends React.Component{
             password: this.state.password
 
         }).then(response =>{
+            this.props.history.push('/home')
             console.log(response)
         }).catch(erro =>{
-            console.log(erro.response)
+            console.log(erro)
+           //this.setState({mensagemErro: erro.response})
         })
     }
 
@@ -37,6 +40,9 @@ class Login extends React.Component{
                     >
                         <div className="bs-docs-section">
                             <Card title="Login">
+                                <div className="row">
+                                    <span>{this.state.mensagemErro}</span>
+                                </div>
                             <div className="row">
                                 <div className="col-lg-12">
                                     <div className="bs-component">
