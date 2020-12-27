@@ -13,8 +13,8 @@ class Login extends React.Component{
         password: '',
         mensagemErro: null
     }
-    entrar = () =>{
-        axios.post('http://localhost:3002/user/authenticate', {
+    entrar =  async () =>{
+       await axios.post('http://localhost:3002/user/authenticate', {
 
             username: this.state.username,
             password: this.state.password
