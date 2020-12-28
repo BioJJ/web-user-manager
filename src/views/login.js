@@ -4,27 +4,35 @@ import Card from '../components/card';
 import FormGroup from '../components/FormGroup';
 import { withRouter } from 'react-router-dom';
 
-import axios from 'axios';
+import UsuarioService from '../app/service/usuarioService';
+import LocalStorageService from '../app/service/localstoregeservice';
+import { mensagemErro } from '../components/toastr';
+
 
 class Login extends React.Component{
 
     state = {
         username: '',
-        password: '',
-        mensagemErro: null
+        password: ''
     }
-    entrar =  async () =>{
-       await axios.post('http://localhost:3002/user/authenticate', {
+
+    constructor(){
+        super();
+        this.service =  new UsuarioService();
+    }
+    entrar =  () =>{
+        this.service.autenticar({
 
             username: this.state.username,
             password: this.state.password
 
         }).then(response =>{
+            LocalStorageService.adicionarItem('_usuario_logado', response.data);
             this.props.history.push('/home')
             console.log(response)
         }).catch(erro =>{
             console.log(erro)
-           //this.setState({mensagemErro: erro.response})
+            mensagemErro(erro.response.data)
         })
     }
 
@@ -40,9 +48,7 @@ class Login extends React.Component{
                     >
                         <div className="bs-docs-section">
                             <Card title="Login">
-                                <div className="row">
-                                    <span>{this.state.mensagemErro}</span>
-                                </div>
+                               
                             <div className="row">
                                 <div className="col-lg-12">
                                     <div className="bs-component">

@@ -1,6 +1,7 @@
 import React from 'react';
 
-import api from 'axios';
+import UsuarioService from '../app/service/usuarioService';
+import LocalStorageService from '../app/service/localstoregeservice';
 
 class Home extends React.Component {
 
@@ -8,12 +9,22 @@ class Home extends React.Component {
         usuario: []
     }
 
+    constructor(){
+        super();
+        this.service =  new UsuarioService();
+    }
+
     componentDidMount(){
-        api.get('http://localhost:3002/user/4u1etm')
+
+       const usuario_logado = LocalStorageService.obterItem('_usuario_logado')
+      // console.log(usuario_logado.findExist);
+       
+       this.service.UsuarioLogado(usuario_logado.findExist.id)
             .then(response => {
+                console.log("autenticado: ", response.data)
                 this.setState({usuario: response.data})
             }).catch(error =>{
-                console.error(error.data)
+                console.log(error.data)
             })
     }
     render() {
@@ -27,7 +38,7 @@ class Home extends React.Component {
                     <p className="lead">
                         <a className="btn btn-primary btn-lg" href="#/cadastrousuario" role="button"><i
                             className="fa fa-users"></i> Cadastrar Usuário</a>
-                        <a className="btn btn-danger btn-lg" href="https://bootswatch.com/flatly/#" role="button"><i
+                        <a className="btn btn-danger btn-lg" href="#/atualizarusuario" role="button"><i
                             className="fa fa-users"></i> Atualizar dados</a>
                     </p>
             </div>

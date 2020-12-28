@@ -16,6 +16,7 @@ function NavBar() {
                         <NavbarItem href="#/home" label="Home" />
                         <NavbarItem href="#/cadastrousuario" label="Usuarios" />
                         <NavbarItem href="#/login" label="Login" />
+                        <NavbarItem href="#/deleta" label="Apagar conta" />
                     </ul>
 
                 </div>

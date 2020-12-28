@@ -5,6 +5,7 @@ import {Route, Switch, HashRouter } from 'react-router-dom';
 import Home from '../views/home';
 import Login from '../views/login';
 import CadastroUsuario from '../views/cadastroUsuario';
+import atualizarUsuario from '../views/atualizarUsuario';
 
 function Routes(){
     return(
@@ -13,6 +14,7 @@ function Routes(){
                 <Route path="/home" component={Home}></Route>
                 <Route path="/login" component={Login}></Route>
                 <Route path="/cadastrousuario" component={CadastroUsuario}></Route>
+                <Route path="/atualizarusuario" component={atualizarUsuario}></Route>
             </Switch>
         </HashRouter>
     )

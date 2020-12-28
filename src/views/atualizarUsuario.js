@@ -6,21 +6,48 @@ import FormGroup from '../components/FormGroup';
 import UsuarioService from '../app/service/usuarioService';
 import { mensagemSucesso, mensagemErro } from '../components/toastr';
 
-class CadastroUsuario extends React.Component{
+import LocalStorageService from '../app/service/localstoregeservice';
 
+class AtualizarUsuario extends React.Component{
+
+         
     state = {
+        id: '',
         nome : '',
         username: '', 
         age: '',
         senha: '',
         senhaRepeticao : ''
+       // usuario: []
     }
+
+    componentDidMount(){
+
+        const usuario_logado = LocalStorageService.obterItem('_usuario_logado')
+        
+        this.service.UsuarioLogado(usuario_logado.findExist.id)
+             .then(response => {
+               //  console.log(response.data.id)
+              // this.setState({usuario: response.data})
+                this.setState({id: usuario_logado.findExist.id});
+                this.setState({nome: usuario_logado.findExist.fullname});
+                this.setState({username: usuario_logado.findExist.username});
+                this.setState({age: usuario_logado.findExist.age});
+                this.setState({senha: usuario_logado.findExist.password});
+                this.setState({senhaRepeticao: usuario_logado.findExist.password});
+             }).catch(error =>{
+                 console.log(error.data)
+             })
+    
+        
+} 
 
     constructor(){
         super();
         this.service = new UsuarioService();
-    }
 
+    }
+    
     validar(){
         const msgs =[];
 
@@ -43,7 +70,7 @@ class CadastroUsuario extends React.Component{
         return msgs;
     }
 
-    cadastrar = () => {
+    atualizar = () => {
         const msgs =  this.validar();
 
         if(msgs && msgs.length>0){
@@ -53,17 +80,23 @@ class CadastroUsuario extends React.Component{
             return false;
         }
 
+        
+        
+
         const usuario = {
+            id: this.state.id,
             fullname: this.state.nome,
             username: this.state.username,
             age: this.state.age,
             password: this.state.senha
         }
 
-        this.service.salvar(usuario)
+        this.service.atualizar(usuario)
         .then( response => {
-            mensagemSucesso('Usuário cadastrado! Faça o login para acessar o sistema.')
-            this.props.history.push('/login')
+          // console.log(response.data);
+           //LocalStorageService.adicionarItem('_usuario_logado', response.data);
+            mensagemSucesso('Dados atualizados!')
+            this.props.history.push('/home')
         }).catch(error => {
             mensagemErro(error.response.data)
         })
@@ -73,17 +106,30 @@ class CadastroUsuario extends React.Component{
     }
 
     cancelar = () => {
-        this.props.history.push('/login')
+        this.props.history.push('/home')
     }
+
+    deletar = () => {
+        this.service
+            .deletar(this.state.id)
+            .then(response => {
+                mensagemSucesso('Conta deletado com sucesso!')
+                this.props.history.push('/login')
+            }).catch(error => {
+                mensagemErro('Ocorreu um erro ao tentar deletar a conta')
+            })
+    }
+
     render(){
         return(
 
-                <Card title="Cadastro de Usuario">
+                <Card title="Atualizar dados">
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="bs-component">
                         <FormGroup label="Nome: *" htmlFor="inputNome">
                                 <input type="text" 
+                                       value={this.state.nome}
                                        id="inputNome" 
                                        className="form-control"
                                        name="nome"
@@ -92,6 +138,7 @@ class CadastroUsuario extends React.Component{
 
                             <FormGroup label="Username: *" htmlFor="username">
                                 <input type="text" 
+                                value={this.state.username}
                                        id="username"
                                        className="form-control"
                                        name="username"
@@ -100,6 +147,7 @@ class CadastroUsuario extends React.Component{
 
                             <FormGroup label="Age: *" htmlFor="age">
                                 <input type="text" 
+                                        value={this.state.age}
                                        id="age"
                                        className="form-control"
                                        name="age"
@@ -108,6 +156,7 @@ class CadastroUsuario extends React.Component{
 
                             <FormGroup label="Senha: *" htmlFor="inputSenha">
                                 <input type="password" 
+                                value={this.state.senha}
                                        id="inputSenha"
                                        className="form-control"
                                        name="senha"
@@ -116,17 +165,21 @@ class CadastroUsuario extends React.Component{
 
                             <FormGroup label="Repita a Senha: *" htmlFor="inputRepitaSenha">
                                 <input type="password" 
+                                value={this.state.senhaRepeticao}
                                        id="inputRepitaSenha"
                                        className="form-control"
                                        name="senha"
                                        onChange={e => this.setState({senhaRepeticao: e.target.value})} />
                             </FormGroup>
 
-                            <button onClick={this.cadastrar} type="button" className="btn btn-success">
-                                <i className="pi pi-save"></i> Salvar
+                            <button onClick={this.atualizar} type="button" className="btn btn-success">
+                                <i className="pi pi-save"></i> Atualizar
                             </button>
                             <button  onClick={this.cancelar} type="button" className="btn btn-danger">
                                 <i className="pi pi-times"></i> Cancelar
+                            </button>
+                            <button  onClick={this.deletar} type="button" className="btn btn-warning">
+                                <i className="pi pi-times"></i> Deletar conta
                             </button>
                             
                         </div>
@@ -138,4 +191,4 @@ class CadastroUsuario extends React.Component{
     }
 }
 
-export default CadastroUsuario;
+export default AtualizarUsuario;
