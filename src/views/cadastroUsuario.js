@@ -21,37 +21,7 @@ class CadastroUsuario extends React.Component{
         this.service = new UsuarioService();
     }
 
-    validar(){
-        const msgs =[];
-
-        if(!this.state.nome){
-            msgs.push("O campo Nome é obrigatório.")
-        }
-        else if(!this.state.username){
-            msgs.push("O campo username é obrigatório.")
-        }
-        else if(!this.state.age){
-            msgs.push("O campo Age é obrigatório.")
-        }
-        if(!this.state.senha || !this.state.senhaRepeticao){
-            msgs.push('Digite a senha 2x.')
-
-        }else if( this.state.senha !== this.state.senhaRepeticao ){
-            msgs.push('As senhas não batem.')
-        }     
-
-        return msgs;
-    }
-
     cadastrar = () => {
-        const msgs =  this.validar();
-
-        if(msgs && msgs.length>0){
-            msgs.forEach( (msg, index)=>{
-                mensagemErro(msg);
-            });
-            return false;
-        }
 
         const usuario = {
             fullname: this.state.nome,
@@ -59,6 +29,15 @@ class CadastroUsuario extends React.Component{
             age: this.state.age,
             password: this.state.senha
         }
+
+        try{
+            this.service.validar(usuario);
+        }catch(erro){
+            const msgs = erro.mensagens;
+            msgs.forEach(msg => mensagemErro(msg));
+            return false;
+        }
+
 
         this.service.salvar(usuario)
         .then( response => {

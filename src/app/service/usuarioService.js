@@ -1,5 +1,7 @@
 import ApiService from '../apiservices';
 
+import ErroValidacao from '../exception/ErroValidacao'
+
 class UsuarioService extends ApiService{
 
     constructor(){
@@ -26,8 +28,30 @@ class UsuarioService extends ApiService{
         return this.delete(`/${id}`)
     }
 
+    validar(usuario){
 
+        const erros =[];
 
+        if(!usuario.nome){
+            erros.push("O campo Nome é obrigatório.")
+        }
+        else if(!usuario.username){
+            erros.push("O campo username é obrigatório.")
+        }
+        else if(!usuario.age){
+            erros.push("O campo Age é obrigatório.")
+        }
+        if(!usuario.senha || !usuario.senhaRepeticao){
+            erros.push('Digite a senha 2x.')
+
+        }else if( usuario.senha !== usuario.senhaRepeticao ){
+            erros.push('As senhas não batem.')
+        }     
+
+        if(erros && erros.length > 0){
+            throw new ErroValidacao(erros);
+        }
+    }
 
 }
 export default UsuarioService;

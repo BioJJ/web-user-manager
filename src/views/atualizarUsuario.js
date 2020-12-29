@@ -5,8 +5,10 @@ import FormGroup from '../components/FormGroup';
 
 import UsuarioService from '../app/service/usuarioService';
 import { mensagemSucesso, mensagemErro } from '../components/toastr';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
 
-import LocalStorageService from '../app/service/localstoregeservice';
+import LocalStorageService from '../app/service/LocalStorageService';
 
 class AtualizarUsuario extends React.Component{
 
@@ -17,7 +19,9 @@ class AtualizarUsuario extends React.Component{
         username: '', 
         age: '',
         senha: '',
-        senhaRepeticao : ''
+        senhaRepeticao : '',
+        showConfirmDialog: false,
+       
        // usuario: []
     }
 
@@ -71,17 +75,6 @@ class AtualizarUsuario extends React.Component{
     }
 
     atualizar = () => {
-        const msgs =  this.validar();
-
-        if(msgs && msgs.length>0){
-            msgs.forEach( (msg, index)=>{
-                mensagemErro(msg);
-            });
-            return false;
-        }
-
-        
-        
 
         const usuario = {
             id: this.state.id,
@@ -89,6 +82,14 @@ class AtualizarUsuario extends React.Component{
             username: this.state.username,
             age: this.state.age,
             password: this.state.senha
+        }
+
+        try{
+            this.service.validar(usuario);
+        }catch(erro){
+            const msgs = erro.mensagens;
+            msgs.forEach(msg => mensagemErro(msg));
+            return false;
         }
 
         this.service.atualizar(usuario)
@@ -109,6 +110,13 @@ class AtualizarUsuario extends React.Component{
         this.props.history.push('/home')
     }
 
+    abrirConfirmacao = () => {
+        this.setState({ showConfirmDialog : true })
+    }
+    cancelarDelecao = () => {
+        this.setState({ showConfirmDialog : false })
+    }
+
     deletar = () => {
         this.service
             .deletar(this.state.id)
@@ -121,6 +129,13 @@ class AtualizarUsuario extends React.Component{
     }
 
     render(){
+
+        const footer = (
+            <div>
+                <Button label="Confirmar" icon="pi pi-check" onClick={this.deletar} />
+                <Button label="Cancelar" icon="pi pi-times" onClick={this.cancelarDelecao} />
+            </div>
+        );
         return(
 
                 <Card title="Atualizar dados">
@@ -173,17 +188,30 @@ class AtualizarUsuario extends React.Component{
                             </FormGroup>
 
                             <button onClick={this.atualizar} type="button" className="btn btn-success">
-                                <i className="pi pi-save"></i> Atualizar
+                                <i className="pi pi-refresh"></i> Atualizar
                             </button>
                             <button  onClick={this.cancelar} type="button" className="btn btn-danger">
                                 <i className="pi pi-times"></i> Cancelar
                             </button>
-                            <button  onClick={this.deletar} type="button" className="btn btn-warning">
-                                <i className="pi pi-times"></i> Deletar conta
+                            <button  onClick={this.abrirConfirmacao} type="button" className="btn btn-warning">
+                                <i className="pi pi-power-off"></i> Deletar conta
                             </button>
                             
                         </div>
                     </div>
+                </div>
+
+                <div>
+                <Dialog header="Apagar conta"
+                        visible={this.state.showConfirmDialog} 
+                        style={{ width: '50vw' }} 
+                        modal={true}
+                        footer={footer} 
+                        onHide={() => this.setState({showConfirmDialog: false})}
+                        >
+                    Confirma a exclusão da sua conta?
+                </Dialog>
+
                 </div>
                 </Card>
            

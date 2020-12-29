@@ -1,7 +1,7 @@
 import React from 'react';
 
 import UsuarioService from '../app/service/usuarioService';
-import LocalStorageService from '../app/service/localstoregeservice';
+import LocalStorageService from '../app/service/LocalStorageService';
 
 class Home extends React.Component {
 
@@ -36,10 +36,10 @@ class Home extends React.Component {
                 <hr className="my-4"/>
                     <p>E essa é sua área administrativa, utilize um dos menus ou botões abaixo para navegar pelo sistema.</p>
                     <p className="lead">
-                        <a className="btn btn-primary btn-lg" href="#/cadastrousuario" role="button"><i
-                            className="fa fa-users"></i> Cadastrar Usuário</a>
-                        <a className="btn btn-danger btn-lg" href="#/atualizarusuario" role="button"><i
-                            className="fa fa-users"></i> Atualizar dados</a>
+                        <a className="btn btn-primary btn-lg" href="#/cadastrousuario" role="button">
+                           <i className="pi pi-user-plus"></i>  Cadastrar Usuário</a>
+                        <a className="btn btn-danger btn-lg" href="#/atualizarusuario" role="button">
+                            <i  className="pi pi-user-edit"></i> Atualizar dados</a>
                     </p>
             </div>
         )

@@ -12,18 +12,21 @@ import 'primeicons/primeicons.css';
 
 import Routes from './routes';
 import NavBar from '../components/navBar';
+import ProvedorAutenticacao from './provedorAutenticacao'
 
 
 class App extends React.Component {
   render() {
     return (
 
-      <>
+      
+      <ProvedorAutenticacao>
         <NavBar />
         <div className="container">
           <Routes />
         </div>
-      </>
+        </ProvedorAutenticacao>
+      
     )
   }
 }
